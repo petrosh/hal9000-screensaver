@@ -1,0 +1,77 @@
+---
+---
+@import "mixin"
+// Center screen
+
+html,
+body,
+#monitor
+	margin: 0
+	padding: 0
+	height: 100%
+	width: 100%
+
+#monitor
+	display: table
+
+#top,
+#middle,
+#bottom
+	display: table-row
+	margin: 0
+	padding: 0
+	vertical-align: middle
+
+#content
+	display: table-cell
+	text-align: center
+	margin: auto
+	vertical-align: middle
+
+.corner
+	padding: 1em
+	font-family: 'Andale Mono'
+	opacity: .6
+	display: table-cell
+
+#upper
+	vertical-align: top
+
+#lower
+	vertical-align: bottom
+	text-align: right
+
+// Fonts
+
+body
+	color: white
+	background-color: black
+
+.mdber
+	font-family: 'mbber'
+	font-size: 2em
+	letter-spacing: .1em
+
+.code
+	font-family: 'mdber'
+	font-size: 10em
+	margin: 0
+
+@include font-face(mdber, fonts/m025096d-webfont, null, null, eot svg ttf woff)
+@include font-face(mbber, fonts/m025094d-webfont, null, null, eot svg ttf woff)
+
+// Fonts
+//
+// @font-face {
+// 	font-family: 'mdber'
+// 	src: url('fonts/m025096d-webfont.eot')
+// 	src: url('fonts/m025096d-webfont.eot?#iefix') format('embedded-opentype'),url('fonts/m025096d-webfont.woff') format('woff'),url('fonts/m025096d-webfont.ttf') format('truetype'),url('fonts/m025096d-webfont.svg#MicrogrammaDBolExtRegular') format('svg')
+// 	font-weight: normal
+// 	font-style: normal
+//
+// @font-face
+// 	font-family: 'mdmer'
+// 	src: url('fonts/m025094d-webfont.eot')
+// 	src: url('fonts/m025094d-webfont.eot?#iefix') format('embedded-opentype'),url('fonts/m025094d-webfont.woff') format('woff'),url('fonts/m025094d-webfont.ttf') format('truetype'),url('fonts/m025094d-webfont.svg#MicrogrammaDMedExtRegular') format('svg')
+// 	font-weight: normal
+// 	font-style: normal

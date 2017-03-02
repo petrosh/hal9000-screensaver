@@ -1,0 +1,52 @@
+-
+  code: 'COM'
+  name: 'Communications'
+  color: '#825064'
+-
+  code: 'NAV'
+  name: 'Navigation'
+  color: '#3C3C78'
+-
+  code: 'LIF'
+  name: 'Life Support'
+  color: '#642846'
+-
+  code: 'VEH'
+  name: 'Vehicle Status'
+  color: '#4B5FB4'
+-
+  code: 'FLX'
+  name: 'Flight Dynamics'
+  color: '#323C82'
+-
+  code: 'NUC'
+  name: 'Nuclear Reactor Status'
+  color: '#1E1950'
+-
+  code: 'HIB'
+  name: 'Hibernation'
+  color: '#325050'
+-
+  code: 'DMG'
+  name: 'System Damage'
+  color: '#A0281E'
+-
+  code: 'CNT'
+  name: 'Control'
+  color: '#466450'
+-
+  code: 'MEM'
+  name: 'Memory'
+  color: '#004178'
+-
+  code: 'TEL'
+  name: 'Telemetry'
+  color: '#64A0DC'
+-
+  code: 'GDE'
+  name: 'Guidance Data Extension'
+  color: '#145AA0'
+-
+  code: 'ATM'
+  name: 'Spacecraft Atmosphere Monitoring'
+  color: '#A0281E'
