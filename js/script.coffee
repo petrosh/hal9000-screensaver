@@ -8,8 +8,8 @@ timedRefresh = (timeoutPeriod) ->
 	document.querySelector('#upper').innerHTML = screen.name.toUpperCase() + " #{id} / " + screens.length
 	document.querySelector('.code').innerHTML = screen.code.split('').join('&nbsp;&nbsp;')
 	document.querySelector('#lower').innerHTML = "BUILD_REVISION {{ site.github.build_revision }}" +
-		"<br>RELEASE {{ site.github.releases | first |inspect }}"
+		"<br>RELEASE {{ site.github.releases | inspect }}"
 	document.body.style.background = screen.color
-	setTimeout timedRefresh, 10000
+	setTimeout timedRefresh, 20000
 
-timedRefresh 10000
+timedRefresh 20000
