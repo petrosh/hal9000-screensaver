@@ -1,5 +1,6 @@
 gems:
   - jekyll-coffeescript
+  - jekyll-github-metadata
 
 sass:
   sass_dir: _sass
