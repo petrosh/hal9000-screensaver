@@ -1,0 +1,5 @@
+gems:
+  - jekyll-coffeescript
+
+sass:
+  sass_dir: _sass
