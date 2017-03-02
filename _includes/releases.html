@@ -1,0 +1,5 @@
+<ul>
+{% for r in site.github.releases %}
+<li>{{ r.tag_name }} - {{ r.name }}</li>
+{% endfor %}
+</ul>
