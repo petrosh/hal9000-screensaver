@@ -9,6 +9,6 @@ timedRefresh = (timeoutPeriod) ->
 	document.querySelector('.code').innerHTML = screen.code.split('').join('&nbsp;&nbsp;')
 	document.querySelector('#lower').innerHTML = "#{id} / " + screens.length
 	document.body.style.background = screen.color
-	setTimeout "location.reload(true);",timeoutPeriod
+	setTimeout timedRefresh, 10000
 
-timedRefresh(10000)
+timedRefresh 10000
