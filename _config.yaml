@@ -4,3 +4,5 @@ gems:
 
 sass:
   sass_dir: _sass
+
+fade: 5s
