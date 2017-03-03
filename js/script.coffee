@@ -15,6 +15,9 @@ timedRefresh = (timeoutPeriod) ->
 	document.querySelector('.subt').innerHTML = screen.code.split('').join('&nbsp;&nbsp;')
 	document.querySelector('.code').innerHTML = ('0' + new Date().getHours()).slice(-2) + ":" + ('0' + new Date().getMinutes()).slice(-2)
 	document.body.style.background = screen.color
-	setTimeout timedRefresh, 20000
+	setTimeout timedRefresh timeoutPeriod, timeoutPeriod
 
-timedRefresh 20000
+# timedRefresh 20000
+setTimeout ( ->
+  timedRefresh 20000
+), 2000
