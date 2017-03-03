@@ -1,5 +1,11 @@
 ---
 ---
+
+if window.innerWidth > window.innerHeight
+	divs = document.querySelectorAll('#top, #bottom')
+	for e in divs
+		e.style.display = 'none'
+
 screens = {{ site.data.screens | jsonify }}
 timedRefresh = (timeoutPeriod) ->
 	id = Math.floor Math.random() * screens.length
