@@ -15,7 +15,7 @@ screens = {{ site.data.screens | jsonify }}
 timedRefresh = (timeoutPeriod) ->
 	id = Math.floor Math.random() * screens.length
 	screen = screens[id]
-	screenName = screen.name.replace(' ','_')
+	screenName = screen.name.replace(/\s/g, '_')
 	document.querySelector('#upper').innerHTML = screenName.toUpperCase() + "<span class='right'>#{id}/" + screens.length + "</span>"
 	month = ('0' + (new Date().getMonth() + 1)).slice -2
 	day = ('0' + (new Date().getDate() + 1)).slice -2
@@ -29,21 +29,20 @@ timedRefresh = (timeoutPeriod) ->
 # timedRefresh 20000
 setTimeout ( ->
   timedRefresh()
-), 2000
+), 500
 
 cb = (r) ->
 	boxes = []
 	divOn = '<div class="on"></div>'
 	divOff = '<div class="off"></div>'
+	today = new Date()
+	milliseconds = 1000*60*60*24
 	for p in r
-		today = new Date()
 		practice = new Date(p.date)
-		milliseconds = 1000*60*60*24
 		diff = Math.round (today-practice)/ milliseconds
 		if diff < 16 then boxes[diff] = 1
 	for i in [15..1] by -1
-		if boxes[i] is 1 then out = divOn else out = divOff
-		document.querySelector('.practices').innerHTML += out
+		document.querySelector('.practices').innerHTML += if boxes[i] is 1 then divOn else divOff
 	console.log boxes
 
 # XMLHttpRequest.coffee
