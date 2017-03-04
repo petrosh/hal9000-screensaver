@@ -30,3 +30,36 @@ timedRefresh = (timeoutPeriod) ->
 setTimeout ( ->
   timedRefresh()
 ), 2000
+
+cb = (r) ->
+	boxes = []
+	divOn = '<div class="on"></div>'
+	divOff = '<div class="off"></div>'
+	for p in r
+		today = new Date()
+		practice = new Date(p.date)
+		milliseconds = 1000*60*60*24
+		diff = Math.round (today-practice)/ milliseconds
+		if diff < 16 then boxes[diff] = 1
+	for i in [15..1] by -1
+		if boxes[i] is 1 then out = divOn else out = divOff
+		document.querySelector('.practices').innerHTML += out
+	console.log boxes
+
+# XMLHttpRequest.coffee
+loadJSON = (url) ->
+  req = new XMLHttpRequest()
+  req.addEventListener 'readystatechange', ->
+    if req.readyState is 4 # ReadyState Complete
+     successResultCodes = [200, 304]
+     if req.status in successResultCodes
+      cb JSON.parse req.responseText
+      return
+     else
+      cb 'error'
+      return
+  req.open 'GET', url, true
+  req.send()
+  return
+
+loadJSON 'https://ashtanga.github.io/practice.json'
