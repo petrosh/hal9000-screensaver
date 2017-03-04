@@ -6,3 +6,4 @@ sass:
   sass_dir: _sass
 
 fade: 5s
+cycle_ms: 20000
