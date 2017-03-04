@@ -62,4 +62,4 @@ loadJSON = (url) ->
   req.send()
   return
 
-loadJSON 'https://ashtanga.github.io/practice.json'
+loadJSON 'https://ashtanga.github.io/practice.json?date=' + new Date().getTime()
