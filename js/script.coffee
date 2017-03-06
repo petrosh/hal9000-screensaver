@@ -2,8 +2,7 @@
 ---
 
 if window.innerWidth > window.innerHeight
-	divs = document.querySelectorAll('#top, #bottom')
-	for e in divs
+	for e in document.querySelectorAll('#top, #bottom')
 		e.style.display = 'none'
 
 yearDay = ->
@@ -12,13 +11,14 @@ yearDay = ->
 	return ('0' + Math.floor(diff / oneDay)).slice(-3)
 
 screens = {{ site.data.screens | jsonify }}
+
 timedRefresh = (timeoutPeriod) ->
 	id = Math.floor Math.random() * screens.length
 	screen = screens[id]
 	screenName = screen.name.replace(/\s/g, '_')
 	document.querySelector('#upper').innerHTML = screenName.toUpperCase() + "<span class='right'>#{id}/" + screens.length + "</span>"
 	month = ('0' + (new Date().getMonth() + 1)).slice -2
-	day = ('0' + (new Date().getDate() + 1)).slice -2
+	day = ('0' + new Date().getDate()).slice -2
 	year = new Date().getFullYear()
 	document.querySelector('.mdber').innerHTML = year + month + day  + '/' + new Date().getDay() + '/' + yearDay()
 	document.querySelector('.subt').innerHTML = screen.code.split('').join('&nbsp;&nbsp;')
@@ -39,11 +39,12 @@ cb = (r) ->
 	milliseconds = 1000*60*60*24
 	for p in r
 		practice = new Date(p.date)
+		dayNumber = new Date(p.date).getDay()
 		diff = Math.round (today-practice)/ milliseconds
-		if diff < 16 then boxes[diff] = 1
-	for i in [15..1] by -1
-		document.querySelector('.practices').innerHTML += if boxes[i] is 1 then divOn else divOff
-	console.log boxes
+		if diff < 16 then boxes[diff] = divOn
+	for i in [14..0] by -1
+		document.querySelector('.practices').innerHTML += if boxes[i] then boxes[i] else divOff
+	return
 
 # XMLHttpRequest.coffee
 loadJSON = (url) ->
@@ -55,7 +56,7 @@ loadJSON = (url) ->
       cb JSON.parse req.responseText
       return
      else
-      cb 'error'
+      document.querySelector('.practices').innerHTML = 'error'
       return
   req.open 'GET', url, true
   req.send()
