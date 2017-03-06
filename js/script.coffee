@@ -41,9 +41,9 @@ cb = (r) ->
 		practice = new Date(p.date)
 		dayNumber = new Date(p.date).getDay()
 		diff = Math.round (today-practice)/ milliseconds
-		if diff < 16 then boxes[diff] = divOn
-	for i in [14..0] by -1
-		document.querySelector('.practices').innerHTML += if boxes[i] then boxes[i] else divOff
+		if diff < 16 then boxes[diff] = 1
+	for i in [15..1] by -1
+		document.querySelector('.practices').innerHTML += if boxes[i] then divOn else divOff
 	return
 
 # XMLHttpRequest.coffee
