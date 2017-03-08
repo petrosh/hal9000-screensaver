@@ -40,7 +40,7 @@ cb = (r) ->
 	for p in r
 		practice = new Date(p.date)
 		dayNumber = new Date(p.date).getDay()
-		diff = Math.round (today-practice)/ milliseconds
+		diff = Math.floor (today-practice)/ milliseconds
 		if diff < 16 then boxes[diff] = 1
 	for i in [14..0] by -1
 		document.querySelector('.practices').innerHTML += if boxes[i] then divOn else divOff
@@ -62,4 +62,4 @@ loadJSON = (url) ->
   req.send()
   return
 
-loadJSON 'https://ashtanga.github.io/practice.json?date=' + new Date().getTime()
+loadJSON '{{ site.practices_url }}?date=' + new Date().getTime()
