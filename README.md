@@ -3,7 +3,7 @@
 Screensaver with practices updated, better vertical.  
 Installed on OSX via [liquidx/webviewscreensaver](https://github.com/liquidx/webviewscreensaver).
 
-[![screenshot](/images/screenshot.png)](https:/petrosh.github.io/hal9000-screensaver)
+[![screenshot](/images/screenshot.png)](https://petrosh.github.io/hal9000-screensaver)
 
 Screens are in [_data/screens.yml](_data/screens.yml).
 
