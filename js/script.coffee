@@ -32,6 +32,7 @@ setTimeout ( ->
 ), 500
 
 cb = (r) ->
+	console.log 'cb return'
 	boxes = []
 	divOn = '<div class="on"></div>'
 	divOff = '<div class="off"></div>'
@@ -48,6 +49,7 @@ cb = (r) ->
 
 # XMLHttpRequest.coffee
 loadJSON = (url) ->
+  console.log 'request'
   req = new XMLHttpRequest()
   req.addEventListener 'readystatechange', ->
     if req.readyState is 4 # ReadyState Complete
@@ -60,6 +62,7 @@ loadJSON = (url) ->
       return
   req.open 'GET', url, true
   req.send()
+  console.log 'req send'
   return
 
 loadJSON '{{ site.practices_url }}?date=' + new Date().getTime()
