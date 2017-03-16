@@ -32,7 +32,7 @@ setTimeout ( ->
 ), 500
 
 cb = (r) ->
-	console.log 'cb return'
+	console.log 'cb return: ', r
 	boxes = []
 	divOn = '<div class="on"></div>'
 	divOff = '<div class="off"></div>'
@@ -43,13 +43,13 @@ cb = (r) ->
 		dayNumber = new Date(p.date).getDay()
 		diff = Math.floor (today-practice)/ milliseconds
 		if diff < 16 then boxes[diff] = 1
+	console.log 'boxes: ', boxes
 	for i in [14..0] by -1
 		document.querySelector('.practices').innerHTML += if boxes[i] then divOn else divOff
 	return
 
 # XMLHttpRequest.coffee
 loadJSON = (url) ->
-  console.log 'request'
   req = new XMLHttpRequest()
   req.addEventListener 'readystatechange', ->
     if req.readyState is 4 # ReadyState Complete
@@ -62,7 +62,6 @@ loadJSON = (url) ->
       return
   req.open 'GET', url, true
   req.send()
-  console.log 'req send'
   return
 
 loadJSON '{{ site.practices_url }}?date=' + new Date().getTime()
