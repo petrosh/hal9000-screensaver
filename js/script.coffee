@@ -32,7 +32,7 @@ setTimeout ( ->
 ), 500
 
 cb = (r) ->
-	console.log 'cb return: ', r
+	# console.log 'cb return: ', r
 	boxes = []
 	divOn = '<div class="on"></div>'
 	divOff = '<div class="off"></div>'
@@ -43,7 +43,7 @@ cb = (r) ->
 		dayNumber = new Date(p.date).getDay()
 		diff = Math.floor (today-practice)/ milliseconds
 		if diff < 16 then boxes[diff] = 1
-	console.log 'boxes: ', boxes
+	# console.log 'boxes: ', boxes
 	for i in [14..0] by -1
 		document.querySelector('.practices').innerHTML += if boxes[i] then divOn else divOff
 	return
@@ -52,14 +52,16 @@ cb = (r) ->
 loadJSON = (url) ->
   req = new XMLHttpRequest()
   req.addEventListener 'readystatechange', ->
+    console.log 'req.readyState: ', req.readyState
     if req.readyState is 4 # ReadyState Complete
-     successResultCodes = [200, 304]
-     if req.status in successResultCodes
-      cb JSON.parse req.responseText
-      return
-     else
-      document.querySelector('.practices').innerHTML = 'error'
-      return
+      successResultCodes = [200, 304]
+      console.log 'req.status: ', req.status
+      console.log 'req.statusText: ', req.statusText
+      if req.status in successResultCodes
+        cb JSON.parse req.responseText
+      else
+        document.querySelector('.practices').innerHTML = 'error'
+  console.log 'req: ', req
   req.open 'GET', url, true
   req.send()
   return
