@@ -65,7 +65,7 @@ cb_spacex = (r) ->
 	# 	head_row.appendChild head_cell
 	# table.appendChild (head.appendChild head_row)
 	for p in r
-		t_minus = p.launch_date_unix - {{ site.time | date: "%s" }}
+		t_minus = p.launch_date_unix - (new_date / 1000)
 		switch
 			when (t_minus < 172800) # 2 days
 				t_message = (t_minus / unix_hour).toFixed(1) + "h"
