@@ -28,10 +28,15 @@ timedRefresh = (timeoutPeriod) ->
 
 # timedRefresh 20000
 setTimeout ( ->
-  timedRefresh()
+	timedRefresh()
 ), 500
 
-cb = (r) ->
+new_date = new Date().getTime()
+unix_hour = 60 * 60
+unix_day = unix_hour * 24
+unix_month = unix_day * 30
+
+cb_practice = (r) ->
 	# console.log 'cb return: ', r
 	boxes = []
 	divOn = '<div class="on"></div>'
@@ -48,22 +53,66 @@ cb = (r) ->
 		document.querySelector('.practices').innerHTML += if boxes[i] then divOn else divOff
 	return
 
-# XMLHttpRequest.coffee
-loadJSON = (url) ->
-  req = new XMLHttpRequest()
-  req.addEventListener 'readystatechange', ->
-    console.log 'req.readyState: ', req.readyState
-    if req.readyState is 4 # ReadyState Complete
-      successResultCodes = [200, 304]
-      console.log 'req.status: ', req.status
-      console.log 'req.statusText: ', req.statusText
-      if req.status in successResultCodes
-        cb JSON.parse req.responseText
-      else
-        document.querySelector('.practices').innerHTML = 'error'
-  console.log 'req: ', req
-  req.open 'GET', url, true
-  req.send()
-  return
+cb_spacex = (r) ->
+	console.log 'cb return: ', r
+	table = document.createElement 'table'
+	# head = document.createElement 'thead'
+	# head_stream = [ "Number", "Payload", "Site", "Core", "T-" ]
+	# head_row = document.createElement 'tr'
+	# for h in head_stream
+	# 	head_cell = document.createElement 'th'
+	# 	head_cell.innerHTML = h
+	# 	head_row.appendChild head_cell
+	# table.appendChild (head.appendChild head_row)
+	for p in r
+		t_minus = p.launch_date_unix - {{ site.time | date: "%s" }}
+		switch
+			when (t_minus < 172800) # 2 days
+				t_message = (t_minus / unix_hour).toFixed(1) + "h"
+			when (t_minus > unix_month) # 2 days
+				t_message = (t_minus / unix_month).toFixed(1) + "m"
+			else
+				t_message = (t_minus / unix_day).toFixed(1) + "d"
+		stream = [
+			p.payloads[0].payload_id
+			p.payloads[0].orbit
+			p.launch_site.site_id
+			p.landing_type
+			p.core_serial
+			"-" + t_message
+			('0' + new Date(p.launch_date_utc).getHours()).slice(-2) +
+			":" +
+			('0' + new Date(p.launch_date_utc).getMinutes()).slice(-2)
+		]
+		row = document.createElement 'tr'
+		for s in stream
+			cell = document.createElement 'td'
+			cell.innerHTML = s
+			row.appendChild cell
+		table.appendChild row
+		console.log p
+	document.querySelector('#content').appendChild table
+	# for i in [14..0] by -1
+	# 	document.querySelector('.practices').innerHTML += if boxes[i] then divOn else divOff
+	return
 
-loadJSON '{{ site.practices_url }}?date=' + new Date().getTime()
+# XMLHttpRequest.coffee
+loadJSON = (url, cb) ->
+	req = new XMLHttpRequest()
+	req.addEventListener 'readystatechange', ->
+		# console.log 'req.readyState: ', req.readyState
+		if req.readyState is 4 # ReadyState Complete
+			successResultCodes = [200, 304]
+			# console.log 'req.status: ', req.status
+			# console.log 'req.statusText: ', req.statusText
+			if req.status in successResultCodes
+				cb JSON.parse req.responseText
+			else
+				document.querySelector('.practices').innerHTML = 'error'
+	# console.log 'req: ', req
+	req.open 'GET', url, true
+	req.send()
+	return
+
+loadJSON "{{ site.practices_url }}?date=#{new_date}", cb_practice
+loadJSON "{{ site.spacex_url }}?date=#{new_date}", cb_spacex
