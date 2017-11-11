@@ -42,8 +42,8 @@ Format expected
 }]
 
 [{
-  cap_serial: null,
-  core_serial: "B1043",
-  details: null
+  "cap_serial": null,
+  "core_serial": "B1043",
+  "details": null
 }]
 ```
