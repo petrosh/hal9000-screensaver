@@ -55,6 +55,7 @@ cb_spacex = (r) ->
 	table = document.createElement 'table'
 	for p in r
 		t_minus = p.launch_date_unix - (new_date / 1000)
+		reused = if p.reused then '*' else ''
 		switch
 			when (t_minus < 172800) # 2 days
 				t_message = (t_minus / unix_hour).toFixed(1) + "h"
@@ -72,22 +73,23 @@ cb_spacex = (r) ->
 			('0' + new Date(p.launch_date_utc).getHours()).slice(-2) +
 			":" +
 			('0' + new Date(p.launch_date_utc).getMinutes()).slice(-2)
-			p.core_serial
+			reused + p.core_serial
 		]
 		row = document.createElement 'tr'
 		for s in stream
 			cell = document.createElement 'td'
 			cell.innerHTML = s
 			row.appendChild cell
-		if p.reused
-			# console.log loadJSON "{{ site.spacex_cores_url }}#{p.core_serial}?date=#{new_date}", cb_reflow
-			fetch "{{ site.spacex_cores_url }}#{p.core_serial}?date=#{new_date}"
-				.then (response) -> response.json()
-				.then (json) ->
-					gap = ((p.launch_date_unix - json[0].launch_date_unix) / unix_month).toFixed(1) + "m"
-					row.innerHTML += "<td>#{gap} #{json[0].payloads[0].orbit} #{json[0].landing_vehicle}</td>"
-					table.appendChild row
-		else table.appendChild row
+		# if p.reused
+		# 	# console.log loadJSON "{{ site.spacex_cores_url }}#{p.core_serial}?date=#{new_date}", cb_reflow
+		# 	fetch "{{ site.spacex_cores_url }}#{p.core_serial}?date=#{new_date}"
+		# 		.then (response) -> response.json()
+		# 		.then (json) ->
+		# 			gap = ((p.launch_date_unix - json[0].launch_date_unix) / unix_month).toFixed(1) + "m"
+		# 			row.innerHTML += "<td>#{gap} #{json[0].payloads[0].orbit} #{json[0].landing_vehicle}</td>"
+		# 			table.appendChild row
+		# else table.appendChild row
+		table.appendChild row
 	document.querySelector('#content').appendChild table
 	return
 
@@ -110,45 +112,4 @@ loadJSON = (url, cb) ->
 	return
 
 loadJSON "{{ site.practices_url }}?date=#{new_date}", cb_practice
-fetch "{{ site.spacex_url }}?date=#{new_date}"
-	.then (response) -> response.json()
-	.then (json) ->
-		table = document.createElement 'table'
-		for p in json
-			t_minus = p.launch_date_unix - (new_date / 1000)
-			switch
-				when (t_minus < 172800) # 2 days
-					t_message = (t_minus / unix_hour).toFixed(1) + "h"
-				when (t_minus > unix_month)
-					t_message = (t_minus / unix_month).toFixed(1) + "m"
-				else
-					t_message = (t_minus / unix_day).toFixed(1) + "d"
-			stream = [
-				p.payloads[0].payload_id
-				p.payloads[0].payload_type
-				p.payloads[0].orbit
-				p.launch_site.site_name.replace /(?=\D)\s(?=\d)/g, '-'
-				p.landing_vehicle || 'expandible'
-				"-" + t_message
-				('0' + new Date(p.launch_date_utc).getHours()).slice(-2) +
-				":" +
-				('0' + new Date(p.launch_date_utc).getMinutes()).slice(-2)
-				p.core_serial
-			]
-			row = document.createElement 'tr'
-			for s in stream
-				cell = document.createElement 'td'
-				cell.innerHTML = s
-				row.appendChild cell
-			if p.reused
-				# console.log loadJSON "{{ site.spacex_cores_url }}#{p.core_serial}?date=#{new_date}", cb_reflow
-				fetch "{{ site.spacex_cores_url }}#{p.core_serial}?date=#{new_date}"
-					.then (response) -> response.json()
-					.then (json) ->
-						gap = ((p.launch_date_unix - json[0].launch_date_unix) / unix_month).toFixed(1) + "m"
-						row.innerHTML += "<td>#{gap} #{json[0].payloads[0].orbit} #{json[0].landing_vehicle}</td>"
-						table.appendChild row
-			else table.appendChild row
-			# table.appendChild row
-		document.querySelector('#content').appendChild table
-	return
+loadJSON "{{ site.spacex_url }}?date=#{new_date}", cb_spacex
