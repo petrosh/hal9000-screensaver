@@ -86,9 +86,8 @@ cb_spacex = (r) ->
 				.then (json) ->
 					gap = ((p.launch_date_unix - json[0].launch_date_unix) / unix_month).toFixed(1) + "m"
 					row.innerHTML += "<td>#{gap} #{json[0].payloads[0].orbit} #{json[0].landing_vehicle}</td>"
-				.then table.appendChild row
+					table.appendChild row
 		else table.appendChild row
-		console.log p
 	document.querySelector('#content').appendChild table
 	return
 
