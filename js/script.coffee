@@ -64,23 +64,18 @@ cb_spacex = (r) ->
 			":" + ('0' + new Date(p.launch_date_utc).getMinutes()).slice(-2)
 		switch
 			when (t_minus < 172800) # 2 days
-				t_message = (t_minus / unix_hour).toPrecision(2) + "h"
+				t_message = (t_minus / unix_hour).toPrecision(2) + "H"
 			when (t_minus > unix_month)
-				t_message = (t_minus / unix_month).toPrecision(2) + "m"
+				t_message = (t_minus / unix_month).toPrecision(2) + "M"
 			else
-				t_message = (t_minus / unix_day).toPrecision(2) + "d"
+				t_message = (t_minus / unix_day).toPrecision(2) + "D"
 		row = document.createElement 'tr'
 		row.setAttribute 'data-launch', "#{p.launch_date_unix}"
 		row.innerHTML += "<td>#{p.payloads[0].payload_id}</td>"
-		row.innerHTML += "<td>#{p.payloads[0].payload_type}</td>" # cap_reused +
-		row.innerHTML += "<td id='#{p.cap_serial}'></td>"
-		row.innerHTML += "<td>#{p.core_serial}</td>" # core_reused +
-		row.innerHTML += "<td id='#{p.core_serial}'></td>"
-		row.innerHTML += "<td>[<small>#{p.payloads[0].orbit}</small>]</td>"
-		row.innerHTML += "<td>#{p.launch_site.site_name.replace /(?=\D)\s(?=\d)/g, '-'}</td>"
-		row.innerHTML += "<td>#{p.landing_vehicle || 'expandible'}</td>"
-		row.innerHTML += "<td>#{"-" + t_message}</td>"
-		row.innerHTML += "<td>#{launch_time}</td>"
+		row.innerHTML += "<td>#{p.payloads[0].payload_type} #{p.cap_serial || ''} [<small>#{p.payloads[0].orbit}</small>]<span id='#{p.cap_serial}'></span></td>"
+		row.innerHTML += "<td>#{p.rocket.rocket_name} #{p.rocket.rocket_type} #{p.core_serial}<span id='#{p.core_serial}'></span></td>"
+		row.innerHTML += "<td>#{p.launch_site.site_name.replace /(?=\D)\s(?=\d)/g, '-'}<span>#{p.landing_vehicle || 'EXP'}</span></td>"
+		row.innerHTML += "<td>#{"-" + t_message}<span>#{launch_time}</span></td>"
 		if p.reuse.core then core_reflown.push p.core_serial
 		if p.reuse.capsule then cap_reflown.push p.cap_serial
 		table.appendChild row
@@ -96,9 +91,9 @@ cb_reflow = (r, u) ->
 	if /core/.test u then id = launch.core_serial
 	if /caps/.test u then id = launch.cap_serial
 	ele = document.getElementById id
-	gap = ((ele.parentNode.getAttribute('data-launch') - launch.launch_date_unix) / unix_month).toPrecision(2) + "m"
-	if /core/.test u then ele.innerHTML = "#{gap} #{launch.payloads[0].orbit} #{launch.landing_vehicle}"
-	if /caps/.test u then ele.innerHTML = "#{gap} #{launch.payloads[0].orbit} #{(launch.payloads[0].flight_time_sec / unix_day).toPrecision(2)}d"
+	gap = ((ele.parentNode.parentNode.getAttribute('data-launch') - launch.launch_date_unix) / unix_month).toPrecision(2) + "M"
+	if /core/.test u then ele.innerHTML = "#{gap} #{launch.payloads[0].payload_id} #{launch.payloads[0].orbit} #{launch.landing_vehicle}"
+	if /caps/.test u then ele.innerHTML = "#{gap} #{launch.payloads[0].payload_id} #{launch.payloads[0].orbit} #{(launch.payloads[0].flight_time_sec / unix_day).toPrecision(2)}D"
 	return
 
 # XMLHttpRequest.coffee

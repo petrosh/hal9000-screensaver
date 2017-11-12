@@ -105,21 +105,22 @@ a
 
 // SpaceX
 #content table
-	padding: 1em
-	background-color: rgba(white, 0.1)
+	background-color: rgba(black, 0.1)
 	margin: 1em auto
 	font-family: 'AndaleMono'
-	td
-		text-align: right
-		padding: 0.2em 0.4em
-	td:nth-child(3),
-	td:nth-child(5)
-		font-size: small
-		color: rgba(white,0.5)
-		position: relative
-		top: 2px
-	// td:nth-child(7)
-	// 	color: rgba(white,0.5)
+	tr
+		td
+			text-align: right
+			padding: 0.6em 1em
+			span
+				display: block
+				font-size: small
+				color: rgba(white,0.5)
+		td:nth-child(2),
+		td:nth-child(3)
+			text-align: center
+	tr:not(:last-child) td
+		border-bottom: 1px solid rgba(white,0.1)
 
 // Fonts
 //
