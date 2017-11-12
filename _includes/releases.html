@@ -1,5 +1,3 @@
-<ul>
-{% for r in site.github.releases %}
-<li><u>{{ r.tag_name }}</u> {{ r.created_at | date: "%Y%m%d/%w/%j" }} &quot;{{ r.name }}&quot;</li>
-{% endfor %}
-</ul>
+<ul class="releases">{% for r in site.github.releases %}
+<li>{{ r.tag_name }} <small>{{ r.created_at | date: "%Y%m%d/%w/%j" }}</small> &quot;{{ r.name }}&quot;</li>
+{% endfor %}</ul>
