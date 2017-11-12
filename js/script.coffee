@@ -37,7 +37,6 @@ unix_day = unix_hour * 24
 unix_month = unix_day * 30
 
 cb_practice = (r) ->
-	# console.log 'cb return: ', r
 	boxes = []
 	divOn = '<div class="on"></div>'
 	divOff = '<div class="off"></div>'
@@ -48,52 +47,49 @@ cb_practice = (r) ->
 		dayNumber = new Date(p.date).getDay()
 		diff = Math.floor (today-practice)/ milliseconds
 		if diff < 16 then boxes[diff] = 1
-	# console.log 'boxes: ', boxes
 	for i in [14..0] by -1
 		document.querySelector('.practices').innerHTML += if boxes[i] then divOn else divOff
 	return
 
 cb_spacex = (r) ->
-	console.log 'cb return: ', r
 	table = document.createElement 'table'
-	# head = document.createElement 'thead'
-	# head_stream = [ "Number", "Payload", "Site", "Core", "T-" ]
-	# head_row = document.createElement 'tr'
-	# for h in head_stream
-	# 	head_cell = document.createElement 'th'
-	# 	head_cell.innerHTML = h
-	# 	head_row.appendChild head_cell
-	# table.appendChild (head.appendChild head_row)
 	for p in r
 		t_minus = p.launch_date_unix - (new_date / 1000)
 		switch
 			when (t_minus < 172800) # 2 days
 				t_message = (t_minus / unix_hour).toFixed(1) + "h"
-			when (t_minus > unix_month) # 2 days
+			when (t_minus > unix_month)
 				t_message = (t_minus / unix_month).toFixed(1) + "m"
 			else
 				t_message = (t_minus / unix_day).toFixed(1) + "d"
 		stream = [
 			p.payloads[0].payload_id
+			p.payloads[0].payload_type
 			p.payloads[0].orbit
-			p.launch_site.site_id
-			p.landing_type
-			p.core_serial
+			p.launch_site.site_name.replace /(?=\D)\s(?=\d)/g, '-'
+			p.landing_vehicle || 'expandible'
 			"-" + t_message
 			('0' + new Date(p.launch_date_utc).getHours()).slice(-2) +
 			":" +
 			('0' + new Date(p.launch_date_utc).getMinutes()).slice(-2)
+			p.core_serial
 		]
 		row = document.createElement 'tr'
 		for s in stream
 			cell = document.createElement 'td'
 			cell.innerHTML = s
 			row.appendChild cell
-		table.appendChild row
+		if p.reused
+			# console.log loadJSON "{{ site.spacex_cores_url }}#{p.core_serial}?date=#{new_date}", cb_reflow
+			fetch "{{ site.spacex_cores_url }}#{p.core_serial}?date=#{new_date}"
+				.then (response) -> response.json()
+				.then (json) ->
+					gap = ((p.launch_date_unix - json[0].launch_date_unix) / unix_month).toFixed(1) + "m"
+					row.innerHTML += "<td>#{gap} #{json[0].payloads[0].orbit} #{json[0].landing_vehicle}</td>"
+				.then table.appendChild row
+		else table.appendChild row
 		console.log p
 	document.querySelector('#content').appendChild table
-	# for i in [14..0] by -1
-	# 	document.querySelector('.practices').innerHTML += if boxes[i] then divOn else divOff
 	return
 
 # XMLHttpRequest.coffee
