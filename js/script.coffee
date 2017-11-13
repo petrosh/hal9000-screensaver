@@ -72,11 +72,11 @@ cb_spacex = (r) ->
 		row = document.createElement 'tr'
 		row.setAttribute 'data-launch', "#{p.launch_date_unix}"
 		body = ''
-		body += "<td>#{p.payloads[0].payload_id}<span>#{p.payloads[0].orbit}</span></td>"
+		body += "<td>#{p.payloads[0].payload_id}<span>#{p.payloads[0].customers[0]}</span></td>"
 		body += "<td>#{p.payloads[0].payload_type}"
 		if p.cap_serial
 			body += " [<small>#{p.cap_serial}</small>]"
-		body += "<span id='#{p.cap_serial}'></span></td>"
+		body += " to #{p.payloads[0].orbit}<span id='#{p.cap_serial}'></span></td>"
 		body += "<td>#{p.rocket.rocket_name} #{p.rocket.rocket_type} [<small>#{p.core_serial}</small>]<span id='#{p.core_serial}'></span></td>"
 		body += "<td>#{p.launch_site.site_name.replace /(?=\D)\s(?=\d)/g, '-'}<span>#{p.landing_vehicle || 'EXP'}</span></td>"
 		body += "<td>#{"-" + t_message}<span>#{launch_time}</span></td>"
