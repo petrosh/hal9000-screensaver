@@ -71,13 +71,18 @@ cb_spacex = (r) ->
 				t_message = (t_minus / unix_day).toPrecision(2) + "D"
 		row = document.createElement 'tr'
 		row.setAttribute 'data-launch', "#{p.launch_date_unix}"
-		row.innerHTML += "<td>#{p.payloads[0].payload_id}<span>#{p.payloads[0].orbit}</span></td>"
-		row.innerHTML += "<td>#{p.payloads[0].payload_type} [<small>#{p.cap_serial || ''}</small>]<span id='#{p.cap_serial}'></span></td>"
-		row.innerHTML += "<td>#{p.rocket.rocket_name} #{p.rocket.rocket_type} [<small>#{p.core_serial}</small>]<span id='#{p.core_serial}'></span></td>"
-		row.innerHTML += "<td>#{p.launch_site.site_name.replace /(?=\D)\s(?=\d)/g, '-'}<span>#{p.landing_vehicle || 'EXP'}</span></td>"
-		row.innerHTML += "<td>#{"-" + t_message}<span>#{launch_time}</span></td>"
+		body = ''
+		body += "<td>#{p.payloads[0].payload_id}<span>#{p.payloads[0].orbit}</span></td>"
+		body += "<td>#{p.payloads[0].payload_type}"
+		if p.cap_serial
+			body += " [<small>#{p.cap_serial}</small>]"
+		body += "<span id='#{p.cap_serial}'></span></td>"
+		body += "<td>#{p.rocket.rocket_name} #{p.rocket.rocket_type} [<small>#{p.core_serial}</small>]<span id='#{p.core_serial}'></span></td>"
+		body += "<td>#{p.launch_site.site_name.replace /(?=\D)\s(?=\d)/g, '-'}<span>#{p.landing_vehicle || 'EXP'}</span></td>"
+		body += "<td>#{"-" + t_message}<span>#{launch_time}</span></td>"
 		if p.reuse.core then core_reflown.push p.core_serial
 		if p.reuse.capsule then cap_reflown.push p.cap_serial
+		row.innerHTML = body
 		table.appendChild row
 	document.querySelector('#content').appendChild table
 	for core_id in core_reflown
