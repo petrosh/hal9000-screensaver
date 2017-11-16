@@ -62,6 +62,8 @@ cb_spacex = (r) ->
 		t_minus = p.launch_date_unix - (new_date / 1000)
 		launch_time = ('0' + new Date(p.launch_date_utc).getHours()).slice(-2) +
 			":" + ('0' + new Date(p.launch_date_utc).getMinutes()).slice(-2)
+		launch_time_local = ('0' + new Date(p.launch_date_local.substr(0,19)).getHours()).slice(-2) +
+			":" + ('0' + new Date(p.launch_date_local.substr(0,19)).getMinutes()).slice(-2)
 		switch
 			when (t_minus < 172800) # 2 days
 				t_message = (t_minus / unix_hour).toPrecision(2) * (-1) + "H"
@@ -72,13 +74,24 @@ cb_spacex = (r) ->
 		row = document.createElement 'tr'
 		row.setAttribute 'data-launch', "#{p.launch_date_unix}"
 		body = ''
+		# :PAYLOAD_ID
+		# :CUSTOMERS[0]
 		body += "<td>#{p.payloads[0].payload_id}<span>#{p.payloads[0].customers[0]}</span></td>"
+		# :PAYLOAD_TYPE
 		body += "<td>#{p.payloads[0].payload_type}"
+		# [:CAP_SERIAL]
 		if p.cap_serial
 			body += " [<small>#{p.cap_serial}</small>]"
+		# to :ORBIT
 		body += " to #{p.payloads[0].orbit}<span id='#{p.cap_serial}'></span></td>"
-		body += "<td>#{p.rocket.rocket_name} #{p.rocket.rocket_type} [<small>#{p.core_serial}</small>]<span id='#{p.core_serial}'></span></td>"
-		body += "<td>#{p.launch_site.site_name.replace /(?=\D)\s(?=\d)/g, '-'}<span>#{p.landing_vehicle || 'EXP'}</span></td>"
+		# :ROCKET_NAME :ROCKET_TYPE [:CORE_SERIAL]
+		# <span> REUSED SECTION </span>
+		body += "<td>#{p.rocket.rocket_name} #{p.rocket.rocket_type} [<small>#{p.core_serial}</small>]#{if p.landing_vehicle then " to #{p.landing_vehicle}" else 'EXP'}<span id='#{p.core_serial}'></span></td>"
+		# :LAUNCH_SITE_NAME
+		# :LANDING_VEHICLE or EXP
+		body += "<td>#{p.launch_site.site_name.replace /(?=\D)\s(?=\d)/g, '-'}<span>#{launch_time_local}</span></td>"
+		# :T_MESSAGE
+		# :LAUNCH_TIME
 		body += "<td>#{t_message}<span>#{launch_time}</span></td>"
 		if p.reuse.core then core_reflown.push p.core_serial
 		if p.reuse.capsule then cap_reflown.push p.cap_serial
