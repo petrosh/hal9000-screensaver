@@ -64,11 +64,11 @@ cb_spacex = (r) ->
 			":" + ('0' + new Date(p.launch_date_utc).getMinutes()).slice(-2)
 		switch
 			when (t_minus < 172800) # 2 days
-				t_message = (t_minus / unix_hour).toPrecision(2) + "H"
+				t_message = (t_minus / unix_hour).toPrecision(2) * (-1) + "H"
 			when (t_minus > unix_month)
-				t_message = (t_minus / unix_month).toPrecision(2) + "M"
+				t_message = (t_minus / unix_month).toPrecision(2) * (-1) + "M"
 			else
-				t_message = (t_minus / unix_day).toPrecision(2) + "D"
+				t_message = (t_minus / unix_day).toPrecision(2) * (-1) + "D"
 		row = document.createElement 'tr'
 		row.setAttribute 'data-launch', "#{p.launch_date_unix}"
 		body = ''
@@ -79,7 +79,7 @@ cb_spacex = (r) ->
 		body += " to #{p.payloads[0].orbit}<span id='#{p.cap_serial}'></span></td>"
 		body += "<td>#{p.rocket.rocket_name} #{p.rocket.rocket_type} [<small>#{p.core_serial}</small>]<span id='#{p.core_serial}'></span></td>"
 		body += "<td>#{p.launch_site.site_name.replace /(?=\D)\s(?=\d)/g, '-'}<span>#{p.landing_vehicle || 'EXP'}</span></td>"
-		body += "<td>#{"-" + t_message}<span>#{launch_time}</span></td>"
+		body += "<td>#{t_message}<span>#{launch_time}</span></td>"
 		if p.reuse.core then core_reflown.push p.core_serial
 		if p.reuse.capsule then cap_reflown.push p.cap_serial
 		row.innerHTML = body
