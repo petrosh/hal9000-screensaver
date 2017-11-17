@@ -60,17 +60,23 @@ cb_spacex = (r) ->
 		core_reused = if p.reused then '*' else ''
 		cap_reused = if p.reuse.capsule then '*' else ''
 		t_minus = p.launch_date_unix - (new_date / 1000)
+		timezone = -1 * new Date().getTimezoneOffset() / 60
+		tz = if timezone > 0 then "+#{('0' + timezone).slice(-2)}" else "#{('0' + timezone).slice(-2)}"
+		offset = p.launch_date_local.substr(-6,3)
 		launch_time = ('0' + new Date(p.launch_date_utc).getHours()).slice(-2) +
 			":" + ('0' + new Date(p.launch_date_utc).getMinutes()).slice(-2)
 		launch_time_local = ('0' + new Date(p.launch_date_local.substr(0,19)).getHours()).slice(-2) +
 			":" + ('0' + new Date(p.launch_date_local.substr(0,19)).getMinutes()).slice(-2)
 		switch
 			when (t_minus < 172800) # 2 days
-				t_message = (t_minus / unix_hour).toPrecision(2) * (-1) + "H"
+				t_message = (t_minus / unix_hour).toPrecision(2) * (-1)
+				t_units = "hours"
 			when (t_minus > unix_month)
-				t_message = (t_minus / unix_month).toPrecision(2) * (-1) + "M"
+				t_message = (t_minus / unix_month).toPrecision(2) * (-1)
+				t_units = "months"
 			else
-				t_message = (t_minus / unix_day).toPrecision(2) * (-1) + "D"
+				t_message = (t_minus / unix_day).toPrecision(2) * (-1)
+				t_units = "days"
 		row = document.createElement 'tr'
 		row.setAttribute 'data-launch', "#{p.launch_date_unix}"
 		body = ''
@@ -89,10 +95,11 @@ cb_spacex = (r) ->
 		body += "<td>#{p.rocket.rocket_name} #{p.rocket.rocket_type} [<small>#{p.core_serial}</small>]#{if p.landing_vehicle then " to #{p.landing_vehicle}" else 'EXP'}<span id='#{p.core_serial}'></span></td>"
 		# :LAUNCH_SITE_NAME
 		# :LANDING_VEHICLE or EXP
-		body += "<td>#{p.launch_site.site_name.replace /(?=\D)\s(?=\d)/g, '-'}<span>#{launch_time_local}</span></td>"
+		body += "<td>#{p.launch_site.site_name.replace /(?=\D)\s(?=\d)/g, '-'}<span>##{p.flight_number}</span></td>"
 		# :T_MESSAGE
 		# :LAUNCH_TIME
-		body += "<td>#{t_message}<span>#{launch_time}</span></td>"
+		body += "<td>T#{t_message}<span>#{t_units.toUpperCase()}</span></td>"
+		body += "<td>#{launch_time}#{tz}<span>#{launch_time_local}#{offset}</span></td>"
 		if p.reuse.core then core_reflown.push p.core_serial
 		if p.reuse.capsule then cap_reflown.push p.cap_serial
 		row.innerHTML = body
@@ -109,9 +116,9 @@ cb_reflow = (r, u) ->
 	if /core/.test u then id = launch.core_serial
 	if /caps/.test u then id = launch.cap_serial
 	ele = document.getElementById id
-	gap = ((ele.parentNode.parentNode.getAttribute('data-launch') - launch.launch_date_unix) / unix_month).toPrecision(2) + "M"
+	gap = ((ele.parentNode.parentNode.getAttribute('data-launch') - launch.launch_date_unix) / unix_month).toPrecision(2) + " Months"
 	if /core/.test u then ele.innerHTML = "#{gap} #{launch.payloads[0].payload_id} #{launch.payloads[0].orbit} #{launch.landing_vehicle}"
-	if /caps/.test u then ele.innerHTML = "#{gap} #{launch.payloads[0].payload_id} #{launch.payloads[0].orbit} #{(launch.payloads[0].flight_time_sec / unix_day).toPrecision(2)}D"
+	if /caps/.test u then ele.innerHTML = "#{gap} #{launch.payloads[0].payload_id} #{launch.payloads[0].orbit} #{(launch.payloads[0].flight_time_sec / unix_day).toPrecision(2)} Days"
 	return
 
 # XMLHttpRequest.coffee
