@@ -98,7 +98,7 @@ cb_spacex = (r) ->
 		body += "<td>#{p.launch_site.site_name.replace /(?=\D)\s(?=\d)/g, '-'}<span>##{p.flight_number}</span></td>"
 		# :T_MESSAGE
 		# :LAUNCH_TIME
-		body += "<td>T#{t_message}<span>#{t_units.toUpperCase()}</span></td>"
+		body += "<td>T#{if t_message > 0 then "+#{t_message}" else t_message}<span>#{t_units.toUpperCase()}</span></td>"
 		body += "<td>#{launch_time}#{tz}<span>#{launch_time_local}#{offset}</span></td>"
 		if p.reuse.core then core_reflown.push p.core_serial
 		if p.reuse.capsule then cap_reflown.push p.cap_serial
