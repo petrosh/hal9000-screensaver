@@ -60,6 +60,7 @@ cb_spacex = (r) ->
 		core_reused = if p.reused then '*' else ''
 		cap_reused = if p.reuse.capsule then '*' else ''
 		t_minus = p.launch_date_unix - (new_date / 1000)
+		t_positive = if t_minus > 0 then true else false
 		timezone = -1 * new Date().getTimezoneOffset() / 60
 		tz = if timezone > 0 then "+#{('0' + timezone).slice(-2)}" else "#{('0' + timezone).slice(-2)}"
 		offset = p.launch_date_local.substr(-6,3)
@@ -68,7 +69,7 @@ cb_spacex = (r) ->
 		launch_time_local = ('0' + new Date(p.launch_date_local.substr(0,19)).getHours()).slice(-2) +
 			":" + ('0' + new Date(p.launch_date_local.substr(0,19)).getMinutes()).slice(-2)
 		switch
-			when (t_minus < 172800) # 2 days
+			when ((t_positive and t_minus < 172800) or (!t_positive and t_minus > -172800)) # 2 days
 				t_message = (t_minus / unix_hour).toPrecision(2) * (-1)
 				t_units = "hours"
 			when (t_minus > unix_month)
@@ -89,13 +90,14 @@ cb_spacex = (r) ->
 		if p.cap_serial
 			body += " [<small>#{p.cap_serial}</small>]"
 		# to :ORBIT
+		# :CAP_SERIAL
 		body += " to #{p.payloads[0].orbit}<span id='#{p.cap_serial}'></span></td>"
-		# :ROCKET_NAME :ROCKET_TYPE [:CORE_SERIAL]
-		# <span> REUSED SECTION </span>
+		# :ROCKET_NAME :ROCKET_TYPE [:CORE_SERIAL] to :LANDING_VEHICLE
+		# CORE_SERIAL
 		body += "<td>#{p.rocket.rocket_name} #{p.rocket.rocket_type} [<small>#{p.core_serial}</small>]#{if p.landing_vehicle then " to #{p.landing_vehicle}" else 'EXP'}<span id='#{p.core_serial}'></span></td>"
 		# :LAUNCH_SITE_NAME
-		# :LANDING_VEHICLE or EXP
-		body += "<td>#{p.launch_site.site_name.replace /(?=\D)\s(?=\d)/g, '-'}<span>##{p.flight_number}</span></td>"
+		# #:FLIGHT_NUMBER :LOCAL_DATE
+		body += "<td>#{p.launch_site.site_name.replace /(?=\D)\s(?=\d)/g, '-'}<span>##{p.flight_number} #{p.launch_date_local.substr(0,10)}</span></td>"
 		# :T_MESSAGE
 		# :LAUNCH_TIME
 		body += "<td>T#{if t_message > 0 then "+#{t_message}" else t_message}<span>#{t_units.toUpperCase()}</span></td>"
