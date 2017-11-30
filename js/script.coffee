@@ -57,70 +57,73 @@ cb_practice = (r) ->
 cb_spacex = (r) ->
 	table = document.createElement 'table'
 	for p in r
-		core_reused = if p.reused then '*' else ''
-		cap_reused = if p.reuse.capsule then '*' else ''
-		t_minus = p.launch_date_unix - (new_date / 1000)
-		t_positive = if t_minus > 0 then true else false
-		timezone = -1 * new Date().getTimezoneOffset() / 60
-		tz = if timezone > 0 then "+#{('0' + timezone).slice(-2)}" else "#{('0' + timezone).slice(-2)}"
-		offset = p.launch_date_local.substr(-6,3)
-		launch_time = ('0' + new Date(p.launch_date_utc).getHours()).slice(-2) +
-			":" + ('0' + new Date(p.launch_date_utc).getMinutes()).slice(-2)
-		launch_time_local = ('0' + new Date(p.launch_date_local.substr(0,19)).getHours()).slice(-2) +
-			":" + ('0' + new Date(p.launch_date_local.substr(0,19)).getMinutes()).slice(-2)
-		switch
-			when ((t_positive and t_minus < 172800) or (!t_positive and t_minus > -172800)) # 2 days
-				t_message = (t_minus / unix_hour).toPrecision(2) * (-1)
-				t_units = "hours"
-			when (t_minus > unix_month)
-				t_message = (t_minus / unix_month).toPrecision(2) * (-1)
-				t_units = "months"
-			else
-				t_message = (t_minus / unix_day).toPrecision(2) * (-1)
-				t_units = "days"
-		row = document.createElement 'tr'
-		row.setAttribute 'data-launch', "#{p.launch_date_unix}"
-		body = ''
-		# :PAYLOAD_ID
-		# :CUSTOMERS[0]
-		body += "<td>#{p.payloads[0].payload_id}<span>#{p.payloads[0].customers[0]}</span></td>"
-		# :PAYLOAD_TYPE
-		body += "<td>#{p.payloads[0].payload_type}"
-		# [:CAP_SERIAL]
-		if p.cap_serial
-			body += " [<small>#{p.cap_serial}</small>]"
-		# to :ORBIT
-		# :CAP_SERIAL
-		body += " to #{p.payloads[0].orbit}<span id='#{p.cap_serial}'></span></td>"
-		# :ROCKET_NAME :ROCKET_TYPE [:CORE_SERIAL] to :LANDING_VEHICLE
-		# CORE_SERIAL
-		body += "<td>#{p.rocket.rocket_name} #{p.rocket.rocket_type} [<small>#{p.core_serial}</small>]#{if p.landing_vehicle then " to #{p.landing_vehicle}" else 'EXP'}<span id='#{p.core_serial}'></span></td>"
-		# :LAUNCH_SITE_NAME
-		# #:FLIGHT_NUMBER :LOCAL_DATE
-		body += "<td>#{p.launch_site.site_name.replace /(?=\D)\s(?=\d)/g, '-'}<span>##{p.flight_number} #{p.launch_date_local.substr(0,10)}</span></td>"
-		# :T_MESSAGE
-		# :LAUNCH_TIME
-		body += "<td>T#{if t_message > 0 then "+#{t_message}" else t_message}<span>#{t_units.toUpperCase()}</span></td>"
-		body += "<td>#{launch_time}#{tz}<span>#{launch_time_local}#{offset}</span></td>"
-		if p.reuse.core then core_reflown.push p.core_serial
-		if p.reuse.capsule then cap_reflown.push p.cap_serial
-		row.innerHTML = body
-		table.appendChild row
+		if p.launch_date_unix != 'TBD'
+			core_reused = if p.reused then '*' else ''
+			cap_reused = if p.reuse.capsule then '*' else ''
+			t_minus = p.launch_date_unix - (new_date / 1000)
+			t_positive = if t_minus > 0 then true else false
+			timezone = -1 * new Date().getTimezoneOffset() / 60
+			tz = if timezone > 0 then "+#{('0' + timezone).slice(-2)}" else "#{('0' + timezone).slice(-2)}"
+			offset = p.launch_date_local.substr(-6,3)
+			launch_time = ('0' + new Date(p.launch_date_utc).getHours()).slice(-2) +
+				":" + ('0' + new Date(p.launch_date_utc).getMinutes()).slice(-2)
+			launch_time_local = ('0' + new Date(p.launch_date_local.substr(0,19)).getHours()).slice(-2) +
+				":" + ('0' + new Date(p.launch_date_local.substr(0,19)).getMinutes()).slice(-2)
+			switch
+				when ((t_positive and t_minus < 172800) or (!t_positive and t_minus > -172800)) # 2 days
+					t_message = (t_minus / unix_hour).toPrecision(2) * (-1)
+					t_units = "hours"
+				when (t_minus > unix_month)
+					t_message = (t_minus / unix_month).toPrecision(2) * (-1)
+					t_units = "months"
+				else
+					t_message = (t_minus / unix_day).toPrecision(2) * (-1)
+					t_units = "days"
+			row = document.createElement 'tr'
+			row.setAttribute 'data-launch', "#{p.launch_date_unix}"
+			body = ''
+			# :PAYLOAD_ID
+			# :CUSTOMERS[0]
+			body += "<td>#{p.rocket.second_stage.payloads[0].payload_id}<span>#{p.rocket.second_stage.payloads[0].customers[0]}</span></td>"
+			# :PAYLOAD_TYPE
+			body += "<td>#{p.rocket.second_stage.payloads[0].payload_type}"
+			# [:CAP_SERIAL]
+			if p.rocket.second_stage.payloads[0].cap_serial
+				body += " [<small>#{p.rocket.second_stage.payloads[0].cap_serial}</small>]"
+			# to :ORBIT
+			# :CAP_SERIAL
+			body += " to #{p.rocket.second_stage.payloads[0].orbit}<span id='#{p.rocket.second_stage.payloads[0].cap_serial}'></span></td>"
+			# :ROCKET_NAME :ROCKET_TYPE [:CORE_SERIAL] to :LANDING_VEHICLE
+			# CORE_SERIAL
+			body += "<td>#{p.rocket.rocket_name} #{p.rocket.rocket_type} [<small>#{p.rocket.first_stage.cores[0].core_serial}</small>]#{if p.rocket.first_stage.cores[0].landing_vehicle then " to #{p.rocket.first_stage.cores[0].landing_vehicle}" else ' EXP'}<span id='#{p.rocket.first_stage.cores[0].core_serial}'></span></td>"
+			# :LAUNCH_SITE_NAME
+			# #:FLIGHT_NUMBER :LOCAL_DATE
+			body += "<td>#{p.launch_site.site_name.replace /(?=\D)\s(?=\d)/g, '-'}<span>##{p.flight_number} #{p.launch_date_local.substr(0,10)}</span></td>"
+			# :T_MESSAGE
+			# :LAUNCH_TIME
+			body += "<td>T#{if t_message > 0 then "+#{t_message}" else t_message}<span>#{t_units.toUpperCase()}</span></td>"
+			body += "<td>#{launch_time}#{tz}<span>#{launch_time_local}#{offset}</span></td>"
+			if p.reuse.core then core_reflown.push p.rocket.first_stage.cores[0].core_serial
+			if p.reuse.side_core1 then core_reflown.push p.rocket.first_stage.cores[1].core_serial
+			if p.reuse.side_core2 then core_reflown.push p.rocket.first_stage.cores[2].core_serial
+			if p.reuse.capsule then cap_reflown.push p.rocket.second_stage.payloads[0].cap_serial
+			row.innerHTML = body
+			table.appendChild row
 	document.querySelector('#content').appendChild table
 	for core_id in core_reflown
-		loadJSON "{{ site.spacex_id_url }}cores/#{core_id}?date=#{new_date}", cb_reflow
+		loadJSON "{{ site.spacex_api }}?core_serial=#{core_id}&date=#{new_date}", cb_reflow
 	for cap_id in cap_reflown
-		loadJSON "{{ site.spacex_id_url }}caps/#{cap_id}?date=#{new_date}", cb_reflow
+		loadJSON "{{ site.spacex_api }}?cap_serial=#{cap_id}&date=#{new_date}", cb_reflow
 	return
 
 cb_reflow = (r, u) ->
 	launch = r[0]
-	if /core/.test u then id = launch.core_serial
-	if /caps/.test u then id = launch.cap_serial
+	if /core_serial/.test u then id = launch.rocket.first_stage.cores[0].core_serial
+	if /cap_serial/.test u then id = launch.rocket.second_stage.payloads[0].cap_serial
 	ele = document.getElementById id
 	gap = ((ele.parentNode.parentNode.getAttribute('data-launch') - launch.launch_date_unix) / unix_month).toPrecision(2) + " Months"
-	if /core/.test u then ele.innerHTML = "#{gap} #{launch.payloads[0].payload_id} #{launch.payloads[0].orbit} #{launch.landing_vehicle}"
-	if /caps/.test u then ele.innerHTML = "#{gap} #{launch.payloads[0].payload_id} #{launch.payloads[0].orbit} #{(launch.payloads[0].flight_time_sec / unix_day).toPrecision(2)} Days"
+	if /core_serial/.test u then ele.innerHTML = "#{gap} #{launch.rocket.second_stage.payloads[0].payload_id} #{launch.rocket.second_stage.payloads[0].orbit} #{launch.rocket.first_stage.cores[0].landing_vehicle}"
+	if /cap_serial/.test u then ele.innerHTML = "#{gap} #{launch.rocket.second_stage.payloads[0].payload_id} #{launch.rocket.second_stage.payloads[0].orbit} #{(launch.rocket.second_stage.payloads[0].flight_time_sec / unix_day).toPrecision(2)} Days"
 	return
 
 # XMLHttpRequest.coffee
@@ -142,4 +145,4 @@ loadJSON = (url, cb) ->
 	return
 
 loadJSON "{{ site.practices_url }}?date=#{new_date}", cb_practice
-loadJSON "{{ site.spacex_url }}?date=#{new_date}", cb_spacex
+loadJSON "{{ site.spacex_api }}upcoming?date=#{new_date}", cb_spacex
