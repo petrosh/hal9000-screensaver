@@ -1,4 +1,4 @@
-gems:
+plugins:
   - jekyll-coffeescript
   - jekyll-github-metadata
 
@@ -8,5 +8,4 @@ sass:
 fade: 5s
 cycle_ms: 20000
 practices_url: https://ashtanga.github.io/practice.json
-spacex_url: https://api.spacexdata.com/v1/launches/upcoming
-spacex_id_url: https://api.spacexdata.com/v1/launches/
+spacex_api: https://api.spacexdata.com/v2/launches/
