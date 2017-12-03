@@ -57,7 +57,7 @@ cb_practice = (r) ->
 cb_spacex = (r) ->
 	table = document.createElement 'table'
 	for p in r
-		if p.launch_date_unix != 'TBD'
+		if p.launch_date_unix
 			core_reused = if p.reused then '*' else ''
 			cap_reused = if p.reuse.capsule then '*' else ''
 			t_minus = p.launch_date_unix - (new_date / 1000)
