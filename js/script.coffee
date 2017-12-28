@@ -56,6 +56,7 @@ cb_practice = (r) ->
 
 cb_spacex = (r) ->
 	table = document.createElement 'table'
+	if window.innerWidth > window.innerHeight then table.style.display = 'none'
 	for p in r
 		if p.launch_date_unix
 			core_reused = if p.reused then '*' else ''
