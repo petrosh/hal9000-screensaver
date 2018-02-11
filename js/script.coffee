@@ -98,8 +98,8 @@ cb_spacex = (r) ->
 			# CORE_SERIAL
 			body += "<td>#{p.rocket.rocket_name} #{p.rocket.rocket_type}#{if p.rocket.first_stage.cores[0].landing_vehicle then " to #{p.rocket.first_stage.cores[0].landing_vehicle}" else ' EXP'}"
 			for c in p.rocket.first_stage.cores
-			  # body += "[<small>#{c.core_serial}</small>] "
-				body += "<span id='#{c.core_serial.split(".")[0]}'></span>"
+			  body += "[<small>#{c.core_serial}</small>] "
+				# body += "<span id='#{c.core_serial.split(".")[0]}'></span>"
 			body += "</td>"
 			# :LAUNCH_SITE_NAME
 			# #:FLIGHT_NUMBER :LOCAL_DATE
@@ -116,7 +116,8 @@ cb_spacex = (r) ->
 			table.appendChild row
 	document.querySelector('#content').appendChild table
 	for core_id in core_reflown
-		loadJSON "{{ site.spacex_api }}?core_serial=#{core_id.split(".")[0]}&date=#{new_date}", cb_reflow
+		loadJSON "{{ site.spacex_api }}?core_serial=#{core_id}&date=#{new_date}", cb_reflow
+		# loadJSON "{{ site.spacex_api }}?core_serial=#{core_id.split(".")[0]}&date=#{new_date}", cb_reflow
 	for cap_id in cap_reflown
 		loadJSON "{{ site.spacex_api }}?cap_serial=#{cap_id}&date=#{new_date}", cb_reflow
 	return
