@@ -85,7 +85,7 @@ cb_spacex = (r) ->
 			body = ''
 			# :PAYLOAD_ID
 			# :CUSTOMERS[0]
-			body += "<td>#{p.rocket.second_stage.payloads[0].payload_id}<span>#{p.rocket.second_stage.payloads[0].customers[0]}</span></td>"
+			body += "<td>#{(p.rocket.second_stage.payloads.map (p) -> p.payload_id).join ' / '}<span>#{(p.rocket.second_stage.payloads.map (p) -> p.customers[0]).join ' / '}</span></td>"
 			# :PAYLOAD_TYPE
 			body += "<td>#{p.rocket.second_stage.payloads[0].payload_type}"
 			# [:CAP_SERIAL]
@@ -93,13 +93,16 @@ cb_spacex = (r) ->
 				body += " [<small>#{p.rocket.second_stage.payloads[0].cap_serial}</small>]"
 			# to :ORBIT
 			# :CAP_SERIAL
-			body += " to #{p.rocket.second_stage.payloads[0].orbit}<span id='#{p.rocket.second_stage.payloads[0].cap_serial}'></span></td>"
+			body += " to #{p.rocket.second_stage.payloads[0].orbit}<span id='#{p.rocket.second_stage.payloads[0].cap_serial}'></span>"
+			body += "<span>#{(p.rocket.second_stage.payloads.map (p) -> p.payload_mass_kg).join ' + '}</span>"
+			body += "</td>"
 			# :ROCKET_NAME :ROCKET_TYPE [:CORE_SERIAL] to :LANDING_VEHICLE
 			# CORE_SERIAL
-			body += "<td>#{p.rocket.rocket_name} #{p.rocket.rocket_type}#{if p.rocket.first_stage.cores[0].landing_vehicle then " to #{p.rocket.first_stage.cores[0].landing_vehicle}" else ' EXP'}"
+			body += "<td>#{p.rocket.rocket_name} #{p.rocket.rocket_type}#{if p.rocket.first_stage.cores[0].landing_vehicle then " to #{p.rocket.first_stage.cores[0].landing_vehicle}" else ' EXP '}"
 			for c in p.rocket.first_stage.cores
-			  body += "[<small>#{c.core_serial}</small>] "
+			  body += "[<small>#{c.core_serial or 'TBD'}</small>] "
 				# body += "<span id='#{c.core_serial.split(".")[0]}'></span>"
+				body += "<span id='#{c.core_serial}'></span>"
 			body += "</td>"
 			# :LAUNCH_SITE_NAME
 			# #:FLIGHT_NUMBER :LOCAL_DATE
