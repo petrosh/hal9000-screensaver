@@ -111,7 +111,7 @@ cb_spacex = (r) ->
 			# :LAUNCH_TIME
 			body += "<td>T#{if t_message > 0 then "+#{t_message}" else t_message}<span>#{t_units.toUpperCase()}</span></td>"
 			body += "<td>#{launch_time}#{tz}<span>#{launch_time_local}#{offset}</span></td>"
-			if p.reuse.core then core_reflown.push p.rocket.first_stage.cores[0].core_serial
+			if p.reuse.core and p.rocket.first_stage.cores[0].core_serial then core_reflown.push p.rocket.first_stage.cores[0].core_serial
 			if p.reuse.side_core1 then core_reflown.push p.rocket.first_stage.cores[1].core_serial
 			if p.reuse.side_core2 then core_reflown.push p.rocket.first_stage.cores[2].core_serial
 			if p.reuse.capsule then cap_reflown.push p.rocket.second_stage.payloads[0].cap_serial
