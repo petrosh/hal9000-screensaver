@@ -94,7 +94,7 @@ cb_spacex = (r) ->
 			# to :ORBIT
 			# :CAP_SERIAL
 			body += " to #{p.rocket.second_stage.payloads[0].orbit}<span id='#{p.rocket.second_stage.payloads[0].cap_serial}'></span>"
-			body += "<span>#{(p.rocket.second_stage.payloads.map (p) -> p.payload_mass_kg).join ' + '}</span>"
+			body += "<span>#{(p.rocket.second_stage.payloads.map (p) -> p.payload_mass_kg).join ' + '} kg</span>"
 			body += "</td>"
 			# :ROCKET_NAME :ROCKET_TYPE [:CORE_SERIAL] to :LANDING_VEHICLE
 			# CORE_SERIAL
