@@ -153,5 +153,5 @@ loadJSON = (url, cb) ->
 	req.send()
 	return
 
-loadJSON "{{ site.practices_url }}?date=#{new_date}", cb_practice
+loadJSON "{{ site.practices_url }}", cb_practice
 loadJSON "{{ site.spacex_api }}upcoming?date=#{new_date}", cb_spacex
