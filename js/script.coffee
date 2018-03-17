@@ -91,14 +91,15 @@ cb_spacex = (r) ->
 			# [:CAP_SERIAL]
 			if p.rocket.second_stage.payloads[0].cap_serial
 				body += " [<small>#{p.rocket.second_stage.payloads[0].cap_serial}</small>]"
+			# [Weigth]
+			body += " <small>#{(p.rocket.second_stage.payloads.map (p) -> p.payload_mass_kg).join ' + '}kg</small> "
 			# to :ORBIT
 			# :CAP_SERIAL
 			body += " to #{p.rocket.second_stage.payloads[0].orbit}<span id='#{p.rocket.second_stage.payloads[0].cap_serial}'></span>"
-			body += "<span>#{(p.rocket.second_stage.payloads.map (p) -> p.payload_mass_kg).join ' + '} kg</span>"
 			body += "</td>"
 			# :ROCKET_NAME :ROCKET_TYPE [:CORE_SERIAL] to :LANDING_VEHICLE
 			# CORE_SERIAL
-			body += "<td>#{p.rocket.rocket_name} #{p.rocket.rocket_type}#{if p.rocket.first_stage.cores[0].landing_vehicle then " to #{p.rocket.first_stage.cores[0].landing_vehicle}" else ' EXP '}"
+			body += "<td>#{p.rocket.rocket_name} #{p.rocket.rocket_type}#{if p.rocket.first_stage.cores[0].landing_vehicle then " to #{p.rocket.first_stage.cores[0].landing_vehicle} " else ' EXP '}"
 			for c in p.rocket.first_stage.cores
 			  body += "[<small>#{c.core_serial or 'TBD'}</small>] "
 				# body += "<span id='#{c.core_serial.split(".")[0]}'></span>"
@@ -114,25 +115,27 @@ cb_spacex = (r) ->
 			if p.reuse.core and p.rocket.first_stage.cores[0].core_serial then core_reflown.push p.rocket.first_stage.cores[0].core_serial
 			if p.reuse.side_core1 then core_reflown.push p.rocket.first_stage.cores[1].core_serial
 			if p.reuse.side_core2 then core_reflown.push p.rocket.first_stage.cores[2].core_serial
-			if p.reuse.capsule then cap_reflown.push p.rocket.second_stage.payloads[0].cap_serial
+			if p.rocket.second_stage.payloads[0].reused then cap_reflown.push p.rocket.second_stage.payloads[0].cap_serial
 			row.innerHTML = body
 			table.appendChild row
 	document.querySelector('#content').appendChild table
 	for core_id in core_reflown
 		loadJSON "{{ site.spacex_api }}?core_serial=#{core_id}&date=#{new_date}", cb_reflow
 		# loadJSON "{{ site.spacex_api }}?core_serial=#{core_id.split(".")[0]}&date=#{new_date}", cb_reflow
+	console.log cap_reflown
 	for cap_id in cap_reflown
 		loadJSON "{{ site.spacex_api }}?cap_serial=#{cap_id}&date=#{new_date}", cb_reflow
 	return
 
 cb_reflow = (r, u) ->
 	launch = r[0]
-	if /core_serial/.test u then id = launch.rocket.first_stage.cores[0].core_serial
-	if /cap_serial/.test u then id = launch.rocket.second_stage.payloads[0].cap_serial
-	ele = document.getElementById id
-	gap = ((ele.parentNode.parentNode.getAttribute('data-launch') - launch.launch_date_unix) / unix_month).toPrecision(2) + " Months"
-	if /core_serial/.test u then ele.innerHTML = "##{launch.flight_number} #{gap} #{launch.rocket.second_stage.payloads[0].payload_id} #{launch.rocket.second_stage.payloads[0].orbit} #{launch.rocket.first_stage.cores[0].landing_vehicle}"
-	if /cap_serial/.test u then ele.innerHTML = "##{launch.flight_number} #{gap} #{launch.rocket.second_stage.payloads[0].payload_id} #{launch.rocket.second_stage.payloads[0].orbit} #{(launch.rocket.second_stage.payloads[0].flight_time_sec / unix_day).toPrecision(2)} Days"
+	if launch
+		if /core_serial/.test u then id = launch.rocket.first_stage.cores[0].core_serial
+		if /cap_serial/.test u then id = launch.rocket.second_stage.payloads[0].cap_serial
+		ele = document.getElementById id
+		gap = ((ele.parentNode.parentNode.getAttribute('data-launch') - launch.launch_date_unix) / unix_month).toPrecision(2) + " Months"
+		if /core_serial/.test u then ele.innerHTML = "##{launch.flight_number} #{gap} #{launch.rocket.second_stage.payloads[0].payload_id} #{launch.rocket.second_stage.payloads[0].orbit} #{launch.rocket.first_stage.cores[0].landing_vehicle}"
+		if /cap_serial/.test u then ele.innerHTML = "##{launch.flight_number} #{gap} #{launch.rocket.second_stage.payloads[0].payload_id} #{launch.rocket.second_stage.payloads[0].orbit} #{(launch.rocket.second_stage.payloads[0].flight_time_sec / unix_day).toPrecision(2)} Days"
 	return
 
 # XMLHttpRequest.coffee
