@@ -56,6 +56,16 @@ cb_practice = (r) ->
 
 cb_spacex = (r) ->
 	table = document.createElement 'table'
+	tfoot = document.createElement 'tfoot'
+	tbody = document.createElement 'tbody'
+	tfoot.innerHTML = "<tr>
+		<td>id<span>customer</span></td>
+		<td>S2 type [serial] mass_kg to orbit<span>#n gap id orbit flight_time</span></td>
+		<td>S1 name type to vehicle [serial]<span>#n gap id orbit vehicle</span></td>
+		<td>site_name<span>#n date_local</span></td>
+		<td>T minus<span>unit</span></td>
+		<td>launch_time<span>time_local</span></td>
+	</tr>"
 	if window.innerWidth > window.innerHeight then table.style.display = 'none'
 	for p in r
 		if p.launch_date_unix
@@ -83,9 +93,15 @@ cb_spacex = (r) ->
 			row = document.createElement 'tr'
 			row.setAttribute 'data-launch', "#{p.launch_date_unix}"
 			body = ''
+			#
+			# CELL 1
+			#
 			# :PAYLOAD_ID
 			# :CUSTOMERS[0]
 			body += "<td>#{(p.rocket.second_stage.payloads.map (p) -> p.payload_id).join ' / '}<span>#{(p.rocket.second_stage.payloads.map (p) -> p.customers[0]).join ' / '}</span></td>"
+			#
+			# CELL 2
+			#
 			# :PAYLOAD_TYPE
 			body += "<td>#{p.rocket.second_stage.payloads[0].payload_type}"
 			# [:CAP_SERIAL]
@@ -97,6 +113,9 @@ cb_spacex = (r) ->
 			# :CAP_SERIAL
 			body += " to #{p.rocket.second_stage.payloads[0].orbit}<span id='#{p.rocket.second_stage.payloads[0].cap_serial}'></span>"
 			body += "</td>"
+			#
+			# CELL 3
+			#
 			# :ROCKET_NAME :ROCKET_TYPE [:CORE_SERIAL] to :LANDING_VEHICLE
 			# CORE_SERIAL
 			body += "<td>#{p.rocket.rocket_name} #{p.rocket.rocket_type}#{if p.rocket.first_stage.cores[0].landing_vehicle then " to #{p.rocket.first_stage.cores[0].landing_vehicle} " else ' EXP '}"
@@ -105,19 +124,30 @@ cb_spacex = (r) ->
 				# body += "<span id='#{c.core_serial.split(".")[0]}'></span>"
 				body += "<span id='#{c.core_serial}'></span>"
 			body += "</td>"
+			#
+			# CELL 4
+			#
 			# :LAUNCH_SITE_NAME
 			# #:FLIGHT_NUMBER :LOCAL_DATE
 			body += "<td>#{p.launch_site.site_name.replace /(?=\D)\s(?=\d)/g, '-'}<span>##{p.flight_number} #{p.launch_date_local.substr(0,10)}</span></td>"
+			#
+			# CELL 5
+			#
 			# :T_MESSAGE
 			# :LAUNCH_TIME
 			body += "<td>T#{if t_message > 0 then "+#{t_message}" else t_message}<span>#{t_units.toUpperCase()}</span></td>"
+			#
+			# CELL 6
+			#
 			body += "<td>#{launch_time}#{tz}<span>#{launch_time_local}#{offset}</span></td>"
 			if p.reuse.core and p.rocket.first_stage.cores[0].core_serial then core_reflown.push p.rocket.first_stage.cores[0].core_serial
 			if p.reuse.side_core1 then core_reflown.push p.rocket.first_stage.cores[1].core_serial
 			if p.reuse.side_core2 then core_reflown.push p.rocket.first_stage.cores[2].core_serial
 			if p.rocket.second_stage.payloads[0].reused then cap_reflown.push p.rocket.second_stage.payloads[0].cap_serial
 			row.innerHTML = body
-			table.appendChild row
+			tbody.appendChild row
+	table.appendChild tbody
+	table.appendChild tfoot
 	document.querySelector('#content').appendChild table
 	for core_id in core_reflown
 		loadJSON "{{ site.spacex_api }}?core_serial=#{core_id}&date=#{new_date}", cb_reflow
