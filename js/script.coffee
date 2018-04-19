@@ -119,8 +119,12 @@ cb_spacex = (r) ->
 			# :ROCKET_NAME :ROCKET_TYPE [:CORE_SERIAL] to :LANDING_VEHICLE
 			# CORE_SERIAL
 			body += "<td>#{p.rocket.rocket_name} #{p.rocket.rocket_type}#{if p.rocket.first_stage.cores[0].landing_vehicle then " to #{p.rocket.first_stage.cores[0].landing_vehicle} " else ' EXP '}"
+			body += "[<small>"
+			for c, i in p.rocket.first_stage.cores
+				if i!=0 then body += ' '
+				body += "#{c.core_serial or 'TBD'}"
+			body += "</small>]"
 			for c in p.rocket.first_stage.cores
-			  body += "[<small>#{c.core_serial or 'TBD'}</small>] "
 				span_id = if c.core_serial then c.core_serial.split(".")[0] else 'tbd'
 				body += "<span id='#{span_id}'></span>"
 				# body += "<span id='#{c.core_serial.split}'></span>"
