@@ -121,8 +121,8 @@ cb_spacex = (r) ->
 			body += "<td>#{p.rocket.rocket_name} #{p.rocket.rocket_type}#{if p.rocket.first_stage.cores[0].landing_vehicle then " to #{p.rocket.first_stage.cores[0].landing_vehicle} " else ' EXP '}"
 			for c in p.rocket.first_stage.cores
 			  body += "[<small>#{c.core_serial or 'TBD'}</small>] "
-				# body += "<span id='#{c.core_serial.split(".")[0]}'></span>"
-				body += "<span id='#{c.core_serial}'></span>"
+				body += "<span id='#{c.core_serial.split(".")[0]}'></span>"
+				# body += "<span id='#{c.core_serial.split}'></span>"
 			body += "</td>"
 			#
 			# CELL 4
@@ -150,8 +150,8 @@ cb_spacex = (r) ->
 	table.appendChild tfoot
 	document.querySelector('#content').appendChild table
 	for core_id in core_reflown
-		loadJSON "{{ site.spacex_api }}?core_serial=#{core_id}&date=#{new_date}", cb_reflow
-		# loadJSON "{{ site.spacex_api }}?core_serial=#{core_id.split(".")[0]}&date=#{new_date}", cb_reflow
+		# loadJSON "{{ site.spacex_api }}?core_serial=#{core_id}&date=#{new_date}", cb_reflow
+		loadJSON "{{ site.spacex_api }}?core_serial=#{core_id.split(".")[0]}&date=#{new_date}", cb_reflow
 	console.log cap_reflown
 	for cap_id in cap_reflown
 		loadJSON "{{ site.spacex_api }}?cap_serial=#{cap_id}&date=#{new_date}", cb_reflow
