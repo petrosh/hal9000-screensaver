@@ -121,7 +121,8 @@ cb_spacex = (r) ->
 			body += "<td>#{p.rocket.rocket_name} #{p.rocket.rocket_type}#{if p.rocket.first_stage.cores[0].landing_vehicle then " to #{p.rocket.first_stage.cores[0].landing_vehicle} " else ' EXP '}"
 			for c in p.rocket.first_stage.cores
 			  body += "[<small>#{c.core_serial or 'TBD'}</small>] "
-				body += "<span id='#{c.core_serial.split(".")[0]}'></span>"
+				span_id = if c.core_serial then c.core_serial.split(".")[0] else 'tbd'
+				body += "<span id='#{span_id}'></span>"
 				# body += "<span id='#{c.core_serial.split}'></span>"
 			body += "</td>"
 			#
