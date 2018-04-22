@@ -25,7 +25,7 @@ External feeds.
 
 ```yml
 practices_url: https://ashtanga.github.io/practice.json
-spacex_url: https://api.spacexdata.com/v1/launches/upcoming
+spacex_url: https://api.spacexdata.com/v2/launches/upcoming
 ```
 
 Format expected
