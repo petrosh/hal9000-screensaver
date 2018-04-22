@@ -108,7 +108,8 @@ cb_spacex = (r) ->
 			if p.rocket.second_stage.payloads[0].cap_serial
 				body += " [<small>#{p.rocket.second_stage.payloads[0].cap_serial}</small>]"
 			# [Weigth]
-			body += " <small>#{(p.rocket.second_stage.payloads.map (p) -> p.payload_mass_kg).join ' + '}kg</small> "
+			kg = (p.rocket.second_stage.payloads.map (p) -> p.payload_mass_kg).join 'kg + '
+			body += " <small>#{if kg then kg else '? '}kg</small> "
 			# to :ORBIT
 			# :CAP_SERIAL
 			body += " to #{p.rocket.second_stage.payloads[0].orbit}<span id='#{p.rocket.second_stage.payloads[0].cap_serial}'></span>"
