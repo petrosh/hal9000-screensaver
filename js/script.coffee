@@ -145,7 +145,7 @@ cb_spacex = (r) ->
 			# CELL 6
 			#
 			body += "<td>#{launch_time}#{tz}<span>#{launch_time_local}#{offset}</span></td>"
-			if p.reuse.core and p.rocket.first_stage.cores[0].core_serial then core_reflown.push p.rocket.first_stage.cores[0].core_serial
+			if (p.reuse.core and p.rocket.first_stage.cores[0].core_serial) or p.rocket.first_stage.cores[0].flight > 1 then core_reflown.push p.rocket.first_stage.cores[0].core_serial
 			if p.reuse.side_core1 then core_reflown.push p.rocket.first_stage.cores[1].core_serial
 			if p.reuse.side_core2 then core_reflown.push p.rocket.first_stage.cores[2].core_serial
 			if p.rocket.second_stage.payloads[0].reused then cap_reflown.push p.rocket.second_stage.payloads[0].cap_serial
