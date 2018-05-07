@@ -1,9 +1,9 @@
 ---
 ---
 
-if window.innerWidth > window.innerHeight
-	for e in document.querySelectorAll('#top, #bottom')
-		e.style.display = 'none'
+# if window.innerWidth > window.innerHeight
+# 	for e in document.querySelectorAll('#top, #bottom')
+# 		e.style.display = 'none'
 
 yearDay = ->
 	diff = new Date() - new Date(new Date().getFullYear(), 0, 0)
@@ -66,7 +66,8 @@ cb_spacex = (r) ->
 		<td>T minus<span>unit</span></td>
 		<td>launch_time<span>time_local</span></td>
 	</tr>"
-	if window.innerWidth > window.innerHeight then table.style.display = 'none'
+	# if window.innerWidth > window.innerHeight then table.style.display = 'none'
+	if window.innerWidth > window.innerHeight then document.querySelector('#content').classList = 'short'
 	for p in r
 		if p.launch_date_unix
 			core_reused = if p.reused then '*' else ''
@@ -154,7 +155,7 @@ cb_spacex = (r) ->
 			tbody.appendChild row
 	table.appendChild tbody
 	table.appendChild tfoot
-	document.querySelector('#content').appendChild table
+	document.querySelector('#lower').appendChild table
 	for core_id in core_reflown
 		# loadJSON "{{ site.spacex_api }}?core_serial=#{core_id}&date=#{new_date}", cb_reflow
 		loadJSON "{{ site.spacex_api }}?core_serial=#{core_id.split(".")[0]}&date=#{new_date}", cb_reflow
