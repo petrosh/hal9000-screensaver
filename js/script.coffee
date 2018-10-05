@@ -55,6 +55,10 @@ cb_practice = (r) ->
 	return
 
 cb_spacex = (r) ->
+	# Sort by launch_date_unix
+	r.sort (obj1, obj2) => obj1.launch_date_unix - obj2.launch_date_unix
+	# for item in temporals
+	# 	console.log item.flight_number, item.launch_date_unix
 	table = document.createElement 'table'
 	tfoot = document.createElement 'tfoot'
 	tbody = document.createElement 'tbody'
@@ -71,7 +75,7 @@ cb_spacex = (r) ->
 	for p in r
 		if p.launch_date_unix
 			core_reused = if p.reused then '*' else ''
-			cap_reused = if p.reuse.capsule then '*' else ''
+			# cap_reused = if p.reused.capsule then '*' else ''
 			t_minus = p.launch_date_unix - (new_date / 1000)
 			t_positive = if t_minus > 0 then true else false
 			timezone = -1 * new Date().getTimezoneOffset() / 60
@@ -147,10 +151,14 @@ cb_spacex = (r) ->
 			# CELL 6
 			#
 			body += "<td>#{launch_time}#{tz}<span>#{launch_time_local}#{offset}</span></td>"
-			if (p.reuse.core and p.rocket.first_stage.cores[0].core_serial) or p.rocket.first_stage.cores[0].flight > 1 then core_reflown.push p.rocket.first_stage.cores[0].core_serial
-			if p.reuse.side_core1 then core_reflown.push p.rocket.first_stage.cores[1].core_serial
-			if p.reuse.side_core2 then core_reflown.push p.rocket.first_stage.cores[2].core_serial
-			if p.rocket.second_stage.payloads[0].reused then cap_reflown.push p.rocket.second_stage.payloads[0].cap_serial
+			if (p.rocket.first_stage.cores[0].reused and p.rocket.first_stage.cores[0].core_serial) or p.rocket.first_stage.cores[0].flight > 1 then core_reflown.push p.rocket.first_stage.cores[0].core_serial
+			if p.rocket.first_stage.cores.length > 1
+				if p.rocket.first_stage.cores[1].reused then core_reflown.push p.rocket.first_stage.cores[1].core_serial
+				if p.rocket.first_stage.cores[2].reused then core_reflown.push p.rocket.first_stage.cores[2].core_serial
+			# Check capsule reused
+			if p.rocket.second_stage.payloads[0].reused && p.rocket.second_stage.payloads[0].cap_serial
+				cap_reflown.push p.rocket.second_stage.payloads[0].cap_serial
+				console.log p.rocket.second_stage.payloads[0]
 			row.innerHTML = body
 			tbody.appendChild row
 	table.appendChild tbody
@@ -159,7 +167,6 @@ cb_spacex = (r) ->
 	for core_id in core_reflown
 		# loadJSON "{{ site.spacex_api }}?core_serial=#{core_id}&date=#{new_date}", cb_reflow
 		loadJSON "{{ site.spacex_api }}?core_serial=#{core_id.split(".")[0]}&date=#{new_date}", cb_reflow
-	console.log cap_reflown
 	for cap_id in cap_reflown
 		loadJSON "{{ site.spacex_api }}?cap_serial=#{cap_id}&date=#{new_date}", cb_reflow
 	return
