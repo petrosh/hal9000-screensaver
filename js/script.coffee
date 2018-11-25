@@ -172,14 +172,18 @@ cb_spacex = (r) ->
 	return
 
 cb_reflow = (r, u) ->
-	launch = r[0]
-	if launch
-		if /core_serial/.test u then id = launch.rocket.first_stage.cores[0].core_serial
-		if /cap_serial/.test u then id = launch.rocket.second_stage.payloads[0].cap_serial
-		ele = document.getElementById id
-		gap = ((ele.parentNode.parentNode.getAttribute('data-launch') - launch.launch_date_unix) / unix_month).toPrecision(2) + " Months"
-		if /core_serial/.test u then ele.innerHTML = "##{launch.flight_number} #{gap} #{launch.rocket.second_stage.payloads[0].payload_id} #{launch.rocket.second_stage.payloads[0].orbit} #{launch.rocket.first_stage.cores[0].landing_vehicle}"
-		if /cap_serial/.test u then ele.innerHTML = "##{launch.flight_number} #{gap} #{launch.rocket.second_stage.payloads[0].payload_id} #{launch.rocket.second_stage.payloads[0].orbit} #{(launch.rocket.second_stage.payloads[0].flight_time_sec / unix_day).toPrecision(2)} Days"
+	for exvoli in [0..(r.length - 2)]
+	  # body...
+		launch = r[exvoli]
+		if launch
+			if /core_serial/.test u then id = launch.rocket.first_stage.cores[0].core_serial
+			if /cap_serial/.test u then id = launch.rocket.second_stage.payloads[0].cap_serial
+			ele = document.getElementById id
+			if ele.innerHTML.length > 0
+				ele.innerHTML += '<br>'
+			gap = ((ele.parentNode.parentNode.getAttribute('data-launch') - launch.launch_date_unix) / unix_month).toPrecision(2) + " Months"
+			if /core_serial/.test u then ele.innerHTML += "##{launch.flight_number} #{gap} #{launch.rocket.second_stage.payloads[0].payload_id} #{launch.rocket.second_stage.payloads[0].orbit} #{launch.rocket.first_stage.cores[0].landing_vehicle}"
+			if /cap_serial/.test u then ele.innerHTML += "##{launch.flight_number} #{gap} #{launch.rocket.second_stage.payloads[0].payload_id} #{launch.rocket.second_stage.payloads[0].orbit} #{(launch.rocket.second_stage.payloads[0].flight_time_sec / unix_day).toPrecision(2)} Days"
 	return
 
 # XMLHttpRequest.coffee
