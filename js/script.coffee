@@ -74,6 +74,10 @@ cb_spacex = (r) ->
 	if window.innerWidth > window.innerHeight then document.querySelector('#content').classList = 'short'
 	for p in r
 		if p.launch_date_unix
+			# Compare dates
+			timed_utc = new Date(p.launch_date_utc).getTime().toString()
+			timed_local = new Date(p.launch_date_local).getTime().toString()
+			coherent = if p.launch_date_unix.toString() != timed_utc.slice(0,10) || p.launch_date_unix.toString() != timed_local.slice(0,10) then "*" else ""
 			core_reused = if p.reused then '*' else ''
 			# cap_reused = if p.reused.capsule then '*' else ''
 			t_minus = p.launch_date_unix - (new_date / 1000)
@@ -150,7 +154,7 @@ cb_spacex = (r) ->
 			#
 			# CELL 6
 			#
-			body += "<td>#{launch_time}#{tz}<span>#{launch_time_local}#{offset}</span></td>"
+			body += "<td>#{launch_time}#{tz}<span>#{launch_time_local}#{offset}#{coherent}</span></td>"
 			if (p.rocket.first_stage.cores[0].reused and p.rocket.first_stage.cores[0].core_serial) or p.rocket.first_stage.cores[0].flight > 1 then core_reflown.push p.rocket.first_stage.cores[0].core_serial
 			if p.rocket.first_stage.cores.length > 1
 				if p.rocket.first_stage.cores[1].reused then core_reflown.push p.rocket.first_stage.cores[1].core_serial
