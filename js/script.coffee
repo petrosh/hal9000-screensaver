@@ -101,6 +101,7 @@ cb_spacex = (r) ->
 					t_units = "days"
 			row = document.createElement 'tr'
 			row.setAttribute 'data-launch', "#{p.launch_date_unix}"
+			if p.tbd then row.classList = 'tbd'
 			body = ''
 			#
 			# CELL 1
